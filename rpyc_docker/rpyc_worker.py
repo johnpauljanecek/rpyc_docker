@@ -1,5 +1,6 @@
 from rpyc_docker import Worker
 import logging,rpyc
+
 logger = logging.getLogger("rpyc_docker")
 logger.setLevel(logging.INFO)
 
@@ -52,7 +53,7 @@ class RpycWorker(Worker):
 
     def connect_rpyc(self):
         self.conn = rpyc.classic.connect("127.0.0.1",self.rpycPort)
-        self.conn.modules.sys.path.insert(0,"/Development/amazon")
+        self.conn.modules.sys.path.insert(0,"/root")
         self.conn.modules.os.environ["USER"] = "root"
         return True
 
@@ -76,6 +77,11 @@ class RpycWorker(Worker):
             processes.append(process)
         return processes
 
+    def docker_ls(self,path = ""):
+        psId = self.docker.exec_create(self.container,"ls %s" % path)
+        lines = self.docker.exec_start(psId,stream=False).splitlines()
+        return lines
+
     def enable_logger(self,name = None,stdError=False):
         self.logStream = cStringIO.StringIO()
         
@@ -92,3 +98,13 @@ class RpycWorker(Worker):
         handler = self.conn.modules.logging.StreamHandler(
             self.logStream)
         remote_logger.addHandler(handler)
+
+    def teardown(self):
+        self.docker.stop(self.container)
+        self.docker.remove_container(self.container)
+
+    def __del__(self):
+        try:
+            self.teardown()
+        except:
+            pass

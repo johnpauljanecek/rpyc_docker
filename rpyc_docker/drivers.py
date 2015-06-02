@@ -43,7 +43,6 @@ class ChromeDriver(WebDriver):
         if self.userAgent :
             self.chromeOptions.add_argument("user-agent=%s" % self.userAgent)
 
-        
         if self.browserBinary:
             self.chromeOptions.binary_location = self.browserBinary
         
