@@ -1,14 +1,17 @@
 from rpyc_docker import RpycWorker
+import rpyc_docker.browser,os.path
+
 import logging,rpyc,rpyc.utils.classic
 logger = logging.getLogger("rpyc_docker")
 logger.setLevel(logging.INFO)
 
 class BrowserRpycWorker(RpycWorker):
-    def __init__(self,docker,mount = "~"):
+    def __init__(self,docker,mount = None):
         RpycWorker.__init__(self,docker,mount)
 
     def setup_browser(self,driver,visible = False,backend = 'xvfb'):
-        rpyc.utils.classic.upload_file(self.conn,"../rpyc_docker/rpyc_docker/browser.py","/root/browser.py")
+        
+        rpyc.utils.classic.upload_file(self.conn,os.path.abspath(rpyc_docker.browser.__file__),"/root/browser.pyc")
         self.browser = self.conn.modules["browser"].Browser()
         self.browser.setup(driver = driver,
                            visible = visible,

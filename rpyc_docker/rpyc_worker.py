@@ -10,7 +10,7 @@ class RpycWorker(Worker):
     there is a conflict with the ports when starting containers
     this needs to be fixed
     """
-    def __init__(self,docker,mount = "~"):
+    def __init__(self,docker,mount = None):
         Worker.__init__(self)
         self.docker = docker
         self.mount = mount
@@ -34,14 +34,18 @@ class RpycWorker(Worker):
 
         if vncExternal :
             port_bindings[5900] = (vncExternal,self.vncPort)
-        
+
+        binds = {}
+        if self.mount :
+            binds = { self.mount : 
+                      { 'bind': '/Development', 'ro': False }}
+            
         self.response = self.docker.start(
             self.container,
             port_bindings = port_bindings, 
             privileged = True,
-            binds = 
-            { self.mount : 
-              { 'bind': '/Development', 'ro': False }},)
+            binds = binds,
+        )
 
         #this option does not seem to work
         #set DNS in docker with 

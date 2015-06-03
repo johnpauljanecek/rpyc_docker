@@ -2,9 +2,9 @@ from basepage import BasePage
 
 class RedditPage(BasePage):
     def __init__(self,browser):
-        BasePage.__init__(self,brower)
+        BasePage.__init__(self,browser)
 
-    def get_reddit_title1(self):
+    def get_reddit_titles(self):
         js = """
         var postedItems = Array.prototype.slice.call(document.querySelectorAll("#siteTable div.thing"))
 
@@ -17,8 +17,8 @@ class RedditPage(BasePage):
         });
         """
 
-        return map(lambda item : dict(item),self.browser.js_execute(js))
+        return map(lambda item : dict(item),self.js_ex(js))
 
     def goto_subreddit(self,subreddit=""):
-        self.goto(self,"http://http://www.reddit.com/%s" % subreddit)
+        self.goto("http://www.reddit.com/%s" % subreddit)
 

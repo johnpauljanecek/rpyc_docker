@@ -1,4 +1,4 @@
-import threading,time,os,traceback,subprocess,rpyc,logging
+import Queue,threading,time,os,traceback,subprocess,rpyc,logging
 from docker.utils import create_host_config
 from subprocess import check_output,CalledProcessError
 
@@ -6,15 +6,14 @@ logger = logging.getLogger("rpyc_docker")
 logger.setLevel(logging.INFO)
 
 class Manager(threading.Thread):
-    def __init__(self,workerCls,argQueue,numWorkers,maxTime = 300):
+    def __init__(self,argQueue,numWorkers,maxTime = 300):
         """
-        argQueue [args] {kwArgs}
+        argQueue cls [args] {kwArgs}
         """
         threading.Thread.__init__(self)
         self.running = True
         self.traceback = None
         
-        self.workerCls  = workerCls 
         self.argQueue = argQueue
         self.numWorkers = numWorkers
         self.maxTime = maxTime
@@ -37,17 +36,17 @@ class Manager(threading.Thread):
         while self.running:
             runningWorkers = []
             doneWorkers = []
-            for worker,args,kwArgs in self.workers :
+            for worker,workerCls,args,kwArgs in self.workers :
                 if worker.upTime > self.maxTime :
-                    self.errors.append(["timeout",args,kwArgs])
+                    self.errors.append(["timeout",workerCls,args,kwArgs])
                     doneWorkers.append(worker)
                 elif worker.status == "running" :
-                    runningWorkers.append([worker,args,kwArgs])
+                    runningWorkers.append([worker,workerCls,args,kwArgs])
                 elif worker.status == "done" :
-                    self.results.append([worker.result,args,kwArgs])
+                    self.results.append([worker.result,workerCls,args,kwArgs])
                     doneWorkers.append(worker)
                 elif worker.status == "error" :
-                    self.errors.append([worker.traceback,args,kwArgs])
+                    self.errors.append([worker.traceback,workerCls,args,kwArgs])
                     doneWorkers.append(worker)
                 else :
                     pass
@@ -58,9 +57,10 @@ class Manager(threading.Thread):
             
             for n in range(self.numWorkers - len(self.workers)) :
                 try:
-                    args,kwArgs = self.argQueue.get_nowait()
-                    worker = self.workerCls(*args,**kwArgs)
-                    self.workers.append([worker,args,kwArgs])
+                    workerCls,args,kwArgs = self.argQueue.get_nowait()
+                    logger.info("%s,%s,%s" % (workerCls,args,kwArgs))
+                    worker = workerCls(*args,**kwArgs)
+                    self.workers.append([worker,workerCls,args,kwArgs])
                     worker.start()
                 except Queue.Empty:
                     break
