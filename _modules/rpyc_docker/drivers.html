@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>rpyc_docker.drivers &mdash; rpyc_docker 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="rpyc_docker 0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="../../index.html">
+          <span>rpyc_docker 0.1 documentation</span></a></h1>
+        <h2 class="heading"><span>rpyc_docker.drivers</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        <a class="uplink" href="../../index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <h1>Source code for rpyc_docker.drivers</h1><div class="highlight"><pre>
+<span class="c">#drivers.py</span>
+<span class="c">#part of docker_rpyc</span>
+<span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">from</span> <span class="nn">selenium.webdriver.firefox.firefox_binary</span> <span class="kn">import</span> <span class="n">FirefoxBinary</span>
+
+<div class="viewcode-block" id="WebDriver"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.drivers.WebDriver">[docs]</a><span class="k">class</span> <span class="nc">WebDriver</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">browserBinary</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span><span class="n">profileDir</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span><span class="n">userAgent</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">userAgent</span> <span class="o">=</span> <span class="n">userAgent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">profileDir</span> <span class="o">=</span> <span class="n">profileDir</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">browserBinary</span> <span class="o">=</span> <span class="n">browserBinary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span>  <span class="bp">None</span>
+                
+<div class="viewcode-block" id="WebDriver.get_userAgent"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.drivers.WebDriver.get_userAgent">[docs]</a>    <span class="k">def</span> <span class="nf">get_userAgent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s">&quot;return navigator.userAgent;&quot;</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="WebDriver.setup"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.drivers.WebDriver.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">pass</span>
+    </div>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span>
+</div>
+<div class="viewcode-block" id="ChromeDriver"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.drivers.ChromeDriver">[docs]</a><span class="k">class</span> <span class="nc">ChromeDriver</span><span class="p">(</span><span class="n">WebDriver</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">chromeDriverPath</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        chromeDriverPath is path to Chrome Driver</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">WebDriver</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chromeDriverPath</span> <span class="o">=</span> <span class="n">chromeDriverPath</span>
+    
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    http://simply-tutorial.com/blog/2014/07/10/selenium-webdriver-set-browsers-user-agent-and-proxy/</span>
+<span class="sd">    chrome://about/ #lists chrome urls</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+<div class="viewcode-block" id="ChromeDriver.get_plugins"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.drivers.ChromeDriver.get_plugins">[docs]</a>    <span class="k">def</span> <span class="nf">get_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c">#driver.get(&quot;chrome://plugins/&quot;)</span>
+        <span class="k">pass</span>
+        </div>
+<div class="viewcode-block" id="ChromeDriver.setup"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.drivers.ChromeDriver.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chromeOptions</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">ChromeOptions</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">userAgent</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">chromeOptions</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">&quot;user-agent=</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">userAgent</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">browserBinary</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">chromeOptions</span><span class="o">.</span><span class="n">binary_location</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">browserBinary</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromeDriverPath</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Chrome</span><span class="p">(</span>
+                <span class="n">executable_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromeDriverPath</span><span class="p">,</span>
+                <span class="n">chrome_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromeOptions</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Chrome</span><span class="p">(</span><span class="n">chrome_options</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chromeOptions</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">True</span>
+</div></div>
+<div class="viewcode-block" id="FirefoxDriver"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.drivers.FirefoxDriver">[docs]</a><span class="k">class</span> <span class="nc">FirefoxDriver</span><span class="p">(</span><span class="n">WebDriver</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">WebDriver</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        
+<div class="viewcode-block" id="FirefoxDriver.setup_profile"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.drivers.FirefoxDriver.setup_profile">[docs]</a>    <span class="k">def</span> <span class="nf">setup_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">browserBinary</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">firefoxBinary</span> <span class="o">=</span> <span class="n">FirefoxBinary</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">browserBinary</span><span class="p">)</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">firefoxProfile</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">FirefoxProfile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">profileDir</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">userAgent</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">firefoxProfile</span><span class="o">.</span><span class="n">set_preference</span><span class="p">(</span><span class="s">&quot;general.useragent.override&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">userAgent</span><span class="p">);</span>
+    </div>
+<div class="viewcode-block" id="FirefoxDriver.setup"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.drivers.FirefoxDriver.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setup_profile</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">browserBinary</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Firefox</span><span class="p">(</span><span class="n">firefox_binary</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">firefoxBinary</span><span class="p">,</span><span class="n">firefox_profile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">firefoxProfile</span><span class="p">)</span>
+        <span class="k">else</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Firefox</span><span class="p">(</span><span class="n">firefox_profile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">firefoxProfile</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span></div></div>
+</pre></div>
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        <a class="uplink" href="../../index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, John Paul Janecek.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

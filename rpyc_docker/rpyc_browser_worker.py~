@@ -1,0 +1,16 @@
+from rpyc_docker import RpycWorker
+import logging,rpyc
+logger = logging.getLogger("rpyc_docker")
+logger.setLevel(logging.INFO)
+
+class BrowserRpycWorker(RpycWorker):
+    def __init__(self,docker,mount = "~"):
+        RpycWorker.__init__(self,docker,mount)
+
+    def setup_browser(self,driver,visible = False,backend = 'xvfb'):
+        self.browser = self.conn.modules["remote.browser"].Browser()
+        self.browser.setup(driver = driver,
+                           visible = visible,
+                           backend = backend)
+        self.driver = self.browser.driver
+        return True

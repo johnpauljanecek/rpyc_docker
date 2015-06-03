@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>rpyc_docker.browser &mdash; rpyc_docker 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="rpyc_docker 0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="../../index.html">
+          <span>rpyc_docker 0.1 documentation</span></a></h1>
+        <h2 class="heading"><span>rpyc_docker.browser</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        <a class="uplink" href="../../index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <h1>Source code for rpyc_docker.browser</h1><div class="highlight"><pre>
+<span class="c">#browser.py</span>
+<span class="c">#part of docker_rpyc</span>
+<span class="kn">from</span> <span class="nn">selenium</span> <span class="kn">import</span> <span class="n">webdriver</span>
+<span class="kn">from</span> <span class="nn">pyvirtualdisplay</span> <span class="kn">import</span> <span class="n">Display</span>
+<span class="kn">import</span> <span class="nn">os.path</span><span class="o">,</span><span class="nn">os</span><span class="o">,</span><span class="nn">datetime</span><span class="o">,</span><span class="nn">logging</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;rpyc_docker&quot;</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Browser"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.browser.Browser">[docs]</a><span class="k">class</span> <span class="nc">Browser</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">display</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s">&quot;%b-</span><span class="si">%d</span><span class="s">-%Y-%H:%M:%S&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Browser.driver_chrome"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.browser.Browser.driver_chrome">[docs]</a>    <span class="k">def</span> <span class="nf">driver_chrome</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Chrome</span><span class="p">(</span><span class="n">executable_path</span><span class="o">=</span><span class="s">&#39;/usr/lib/chromium-browser/chromedriver&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s">&quot;chrome&quot;</span>
+</div>
+<div class="viewcode-block" id="Browser.driver_firefox"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.browser.Browser.driver_firefox">[docs]</a>    <span class="k">def</span> <span class="nf">driver_firefox</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">webdriver</span><span class="o">.</span><span class="n">Firefox</span><span class="p">()</span>
+        <span class="k">return</span> <span class="s">&quot;firefox&quot;</span>
+</div>
+<div class="viewcode-block" id="Browser.patch_pydisplay"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.browser.Browser.patch_pydisplay">[docs]</a>    <span class="k">def</span> <span class="nf">patch_pydisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;patch xvnc to use password file&quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">pyvirtualdisplay.xvnc</span> <span class="kn">import</span> <span class="n">XvncDisplay</span>
+        <span class="kn">import</span> <span class="nn">pexpect</span>
+
+        <span class="n">child</span> <span class="o">=</span> <span class="n">pexpect</span><span class="o">.</span><span class="n">spawn</span><span class="p">(</span><span class="s">&#39;vncpasswd&#39;</span><span class="p">)</span>
+        <span class="n">child</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span><span class="s">&#39;Password:&#39;</span><span class="p">)</span>
+        <span class="n">child</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s">&#39;secret&#39;</span><span class="p">)</span>
+        <span class="n">child</span><span class="o">.</span><span class="n">expect</span><span class="p">(</span><span class="s">&#39;Verify:&#39;</span><span class="p">)</span>
+        <span class="n">child</span><span class="o">.</span><span class="n">sendline</span><span class="p">(</span><span class="s">&#39;secret&#39;</span><span class="p">)</span>
+
+        <span class="nd">@property</span>
+        <span class="k">def</span> <span class="nf">_cmd</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">cmd</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Xvnc&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;-depth&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">color_depth</span><span class="p">),</span>
+                   <span class="s">&#39;-geometry&#39;</span><span class="p">,</span> <span class="s">&#39;</span><span class="si">%d</span><span class="s">x</span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                   <span class="s">&#39;-rfbport&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rfbport</span><span class="p">),</span>
+                   <span class="s">&#39;-rfbauth&#39;</span><span class="p">,</span> <span class="s">&#39;/root/.vnc/passwd&#39;</span><span class="p">,</span>
+                   <span class="bp">self</span><span class="o">.</span><span class="n">new_display_var</span><span class="p">,</span>
+               <span class="p">]</span>
+            <span class="k">return</span> <span class="n">cmd</span>
+        <span class="n">XvncDisplay</span><span class="o">.</span><span class="n">_cmd</span> <span class="o">=</span> <span class="n">_cmd</span>
+</div>
+<div class="viewcode-block" id="Browser.setup"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.browser.Browser.setup">[docs]</a>    <span class="k">def</span> <span class="nf">setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">visible</span> <span class="o">=</span> <span class="bp">False</span><span class="p">,</span>
+              <span class="n">driver</span> <span class="o">=</span> <span class="s">&quot;firefox&quot;</span><span class="p">,</span>
+              <span class="n">backend</span> <span class="o">=</span> <span class="s">&#39;xvfb&#39;</span><span class="p">,</span>
+              <span class="n">opt</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        driver is either a function which creates a webdriver</span>
+<span class="sd">        or an attribute string</span>
+<span class="sd">        visible is either True or False, if False it uses pydisplay</span>
+<span class="sd">        backend only is used if visible is False, can be either &#39;xvfb&#39; or &#39;xvnc&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s">&quot;xvnc&quot;</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">patch_pydisplay</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">visible</span> <span class="p">:</span>
+            <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s">&#39;xvfb&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">display</span> <span class="o">=</span> <span class="n">Display</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">)</span>
+            <span class="k">else</span> <span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">display</span> <span class="o">=</span> <span class="n">Display</span><span class="p">(</span><span class="n">backend</span><span class="o">=</span><span class="n">backend</span><span class="p">,</span><span class="n">rfbport</span> <span class="o">=</span> <span class="mi">5900</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">driver</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s">&quot;driver_</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">driver</span><span class="p">,))()</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">teardown</span><span class="p">()</span>
+                <span class="k">return</span> <span class="bp">False</span>
+</div>
+<div class="viewcode-block" id="Browser.teardown"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.browser.Browser.teardown">[docs]</a>    <span class="k">def</span> <span class="nf">teardown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">display</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">display</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div>
+<div class="viewcode-block" id="Browser.js_ex"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.browser.Browser.js_ex">[docs]</a>    <span class="k">def</span> <span class="nf">js_ex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">script</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="n">script</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Browser.js_ex_file"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.browser.Browser.js_ex_file">[docs]</a>    <span class="k">def</span> <span class="nf">js_ex_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fileName</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">file</span><span class="p">(</span><span class="n">fileName</span><span class="p">,</span><span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span> <span class="p">:</span>
+            <span class="n">script</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="n">script</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Browser.get_attributes"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.browser.Browser.get_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">get_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">element</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;gets all of the attributes of a selenium web element&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        var items = {}; </span>
+<span class="s">        for (index = 0; index &lt; arguments[0].attributes.length; ++index) </span>
+<span class="s">        { items[arguments[0].attributes[index].name] = arguments[0].attributes[index].value }; return items;&quot;&quot;&quot;</span><span class="p">,</span>
+                                          <span class="n">element</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Browser.get_element_image"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.browser.Browser.get_element_image">[docs]</a>    <span class="k">def</span> <span class="nf">get_element_image</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">element</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;takes screenshot of an element returns it as a PIL image</span>
+<span class="sd">        on IPython notebook the PIL image will be automatically </span>
+<span class="sd">        displayed. Requires that PIL or Pillows is installed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+        <span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+        <span class="n">location</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">location</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">element</span><span class="o">.</span><span class="n">size</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">get_screenshot_as_png</span><span class="p">()))</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">location</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">])</span>
+        <span class="n">top</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">location</span><span class="p">[</span><span class="s">&#39;y&#39;</span><span class="p">])</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">location</span><span class="p">[</span><span class="s">&#39;x&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">size</span><span class="p">[</span><span class="s">&#39;width&#39;</span><span class="p">])</span>
+        <span class="n">bottom</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">location</span><span class="p">[</span><span class="s">&#39;y&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">size</span><span class="p">[</span><span class="s">&#39;height&#39;</span><span class="p">])</span>
+        <span class="n">img</span> <span class="o">=</span> <span class="n">img</span><span class="o">.</span><span class="n">crop</span><span class="p">((</span><span class="n">left</span><span class="p">,</span> <span class="n">top</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">bottom</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">img</span></div></div>
+</pre></div>
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        <a class="uplink" href="../../index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, John Paul Janecek.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,5 @@
+from basepage import BasePage
+
+class RedditPage(BasePage):
+    def __init__(self,browser):
+        BasePage.__init__(self,brower)
