@@ -1,0 +1,321 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>rpyc_docker package &mdash; rpyc_docker 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="rpyc_docker 0.1 documentation" href="index.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="index.html">
+          <span>rpyc_docker 0.1 documentation</span></a></h1>
+        <h2 class="heading"><span>rpyc_docker package</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <div class="section" id="rpyc-docker-package">
+<h1>rpyc_docker package<a class="headerlink" href="#rpyc-docker-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-rpyc_docker.browser">
+<span id="rpyc-docker-browser-module"></span><h2>rpyc_docker.browser module<a class="headerlink" href="#module-rpyc_docker.browser" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="rpyc_docker.browser.Browser">
+<em class="property">class </em><code class="descclassname">rpyc_docker.browser.</code><code class="descname">Browser</code><a class="reference internal" href="_modules/rpyc_docker/browser.html#Browser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.browser.Browser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="rpyc_docker.browser.Browser.driver_chrome">
+<code class="descname">driver_chrome</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/browser.html#Browser.driver_chrome"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.browser.Browser.driver_chrome" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.browser.Browser.driver_firefox">
+<code class="descname">driver_firefox</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/browser.html#Browser.driver_firefox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.browser.Browser.driver_firefox" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.browser.Browser.get_attributes">
+<code class="descname">get_attributes</code><span class="sig-paren">(</span><em>element</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/browser.html#Browser.get_attributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.browser.Browser.get_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>gets all of the attributes of a selenium web element</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.browser.Browser.get_element_image">
+<code class="descname">get_element_image</code><span class="sig-paren">(</span><em>element</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/browser.html#Browser.get_element_image"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.browser.Browser.get_element_image" title="Permalink to this definition">¶</a></dt>
+<dd><p>takes screenshot of an element returns it as a PIL image
+on IPython notebook the PIL image will be automatically 
+displayed. Requires that PIL or Pillows is installed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.browser.Browser.js_ex">
+<code class="descname">js_ex</code><span class="sig-paren">(</span><em>script</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/browser.html#Browser.js_ex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.browser.Browser.js_ex" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.browser.Browser.js_ex_file">
+<code class="descname">js_ex_file</code><span class="sig-paren">(</span><em>fileName</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/browser.html#Browser.js_ex_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.browser.Browser.js_ex_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.browser.Browser.patch_pydisplay">
+<code class="descname">patch_pydisplay</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/browser.html#Browser.patch_pydisplay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.browser.Browser.patch_pydisplay" title="Permalink to this definition">¶</a></dt>
+<dd><p>patch xvnc to use password file</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.browser.Browser.setup">
+<code class="descname">setup</code><span class="sig-paren">(</span><em>visible=False</em>, <em>driver='firefox'</em>, <em>backend='xvfb'</em>, <em>opt=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/browser.html#Browser.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.browser.Browser.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>driver is either a function which creates a webdriver
+or an attribute string
+visible is either True or False, if False it uses pydisplay
+backend only is used if visible is False, can be either &#8216;xvfb&#8217; or &#8216;xvnc&#8217;</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.browser.Browser.teardown">
+<code class="descname">teardown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/browser.html#Browser.teardown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.browser.Browser.teardown" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-rpyc_docker.drivers">
+<span id="rpyc-docker-drivers-module"></span><h2>rpyc_docker.drivers module<a class="headerlink" href="#module-rpyc_docker.drivers" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="rpyc_docker.drivers.ChromeDriver">
+<em class="property">class </em><code class="descclassname">rpyc_docker.drivers.</code><code class="descname">ChromeDriver</code><span class="sig-paren">(</span><em>chromeDriverPath=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/drivers.html#ChromeDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.drivers.ChromeDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rpyc_docker.drivers.WebDriver" title="rpyc_docker.drivers.WebDriver"><code class="xref py py-class docutils literal"><span class="pre">rpyc_docker.drivers.WebDriver</span></code></a></p>
+<dl class="method">
+<dt id="rpyc_docker.drivers.ChromeDriver.get_plugins">
+<code class="descname">get_plugins</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/drivers.html#ChromeDriver.get_plugins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.drivers.ChromeDriver.get_plugins" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.drivers.ChromeDriver.setup">
+<code class="descname">setup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/drivers.html#ChromeDriver.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.drivers.ChromeDriver.setup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="rpyc_docker.drivers.FirefoxDriver">
+<em class="property">class </em><code class="descclassname">rpyc_docker.drivers.</code><code class="descname">FirefoxDriver</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/drivers.html#FirefoxDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.drivers.FirefoxDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rpyc_docker.drivers.WebDriver" title="rpyc_docker.drivers.WebDriver"><code class="xref py py-class docutils literal"><span class="pre">rpyc_docker.drivers.WebDriver</span></code></a></p>
+<dl class="method">
+<dt id="rpyc_docker.drivers.FirefoxDriver.setup">
+<code class="descname">setup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/drivers.html#FirefoxDriver.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.drivers.FirefoxDriver.setup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.drivers.FirefoxDriver.setup_profile">
+<code class="descname">setup_profile</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/drivers.html#FirefoxDriver.setup_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.drivers.FirefoxDriver.setup_profile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="rpyc_docker.drivers.WebDriver">
+<em class="property">class </em><code class="descclassname">rpyc_docker.drivers.</code><code class="descname">WebDriver</code><span class="sig-paren">(</span><em>browserBinary=None</em>, <em>profileDir=None</em>, <em>userAgent=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/drivers.html#WebDriver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.drivers.WebDriver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="rpyc_docker.drivers.WebDriver.get_userAgent">
+<code class="descname">get_userAgent</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/drivers.html#WebDriver.get_userAgent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.drivers.WebDriver.get_userAgent" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.drivers.WebDriver.setup">
+<code class="descname">setup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/drivers.html#WebDriver.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.drivers.WebDriver.setup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-rpyc_docker.manager">
+<span id="rpyc-docker-manager-module"></span><h2>rpyc_docker.manager module<a class="headerlink" href="#module-rpyc_docker.manager" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="rpyc_docker.manager.Manager">
+<em class="property">class </em><code class="descclassname">rpyc_docker.manager.</code><code class="descname">Manager</code><span class="sig-paren">(</span><em>argQueue</em>, <em>numWorkers</em>, <em>maxTime=300</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/manager.html#Manager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.manager.Manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
+<dl class="method">
+<dt id="rpyc_docker.manager.Manager.report">
+<code class="descname">report</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/manager.html#Manager.report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.manager.Manager.report" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.manager.Manager.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/manager.html#Manager.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.manager.Manager.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.manager.Manager.stop">
+<code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/manager.html#Manager.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.manager.Manager.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-rpyc_docker.rpyc_browser_worker">
+<span id="rpyc-docker-rpyc-browser-worker-module"></span><h2>rpyc_docker.rpyc_browser_worker module<a class="headerlink" href="#module-rpyc_docker.rpyc_browser_worker" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="rpyc_docker.rpyc_browser_worker.BrowserRpycWorker">
+<em class="property">class </em><code class="descclassname">rpyc_docker.rpyc_browser_worker.</code><code class="descname">BrowserRpycWorker</code><span class="sig-paren">(</span><em>docker</em>, <em>mount=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/rpyc_browser_worker.html#BrowserRpycWorker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.rpyc_browser_worker.BrowserRpycWorker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rpyc_docker.rpyc_worker.RpycWorker" title="rpyc_docker.rpyc_worker.RpycWorker"><code class="xref py py-class docutils literal"><span class="pre">rpyc_docker.rpyc_worker.RpycWorker</span></code></a></p>
+<dl class="method">
+<dt id="rpyc_docker.rpyc_browser_worker.BrowserRpycWorker.dump_page">
+<code class="descname">dump_page</code><span class="sig-paren">(</span><em>destDir</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/rpyc_browser_worker.html#BrowserRpycWorker.dump_page"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.rpyc_browser_worker.BrowserRpycWorker.dump_page" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.rpyc_browser_worker.BrowserRpycWorker.setup_browser">
+<code class="descname">setup_browser</code><span class="sig-paren">(</span><em>driver</em>, <em>visible=False</em>, <em>backend='xvfb'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/rpyc_browser_worker.html#BrowserRpycWorker.setup_browser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.rpyc_browser_worker.BrowserRpycWorker.setup_browser" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-rpyc_docker.rpyc_worker">
+<span id="rpyc-docker-rpyc-worker-module"></span><h2>rpyc_docker.rpyc_worker module<a class="headerlink" href="#module-rpyc_docker.rpyc_worker" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="rpyc_docker.rpyc_worker.RpycWorker">
+<em class="property">class </em><code class="descclassname">rpyc_docker.rpyc_worker.</code><code class="descname">RpycWorker</code><span class="sig-paren">(</span><em>docker</em>, <em>mount=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/rpyc_worker.html#RpycWorker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.rpyc_worker.RpycWorker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#rpyc_docker.worker.Worker" title="rpyc_docker.worker.Worker"><code class="xref py py-class docutils literal"><span class="pre">rpyc_docker.worker.Worker</span></code></a></p>
+<dl class="method">
+<dt id="rpyc_docker.rpyc_worker.RpycWorker.connect_rpyc">
+<code class="descname">connect_rpyc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/rpyc_worker.html#RpycWorker.connect_rpyc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.rpyc_worker.RpycWorker.connect_rpyc" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.rpyc_worker.RpycWorker.create_container">
+<code class="descname">create_container</code><span class="sig-paren">(</span><em>vncExternal=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/rpyc_worker.html#RpycWorker.create_container"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.rpyc_worker.RpycWorker.create_container" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.rpyc_worker.RpycWorker.docker_ls">
+<code class="descname">docker_ls</code><span class="sig-paren">(</span><em>path=''</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/rpyc_worker.html#RpycWorker.docker_ls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.rpyc_worker.RpycWorker.docker_ls" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.rpyc_worker.RpycWorker.docker_ps">
+<code class="descname">docker_ps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/rpyc_worker.html#RpycWorker.docker_ps"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.rpyc_worker.RpycWorker.docker_ps" title="Permalink to this definition">¶</a></dt>
+<dd><p>gets all the processes running in the docker container</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.rpyc_worker.RpycWorker.enable_logger">
+<code class="descname">enable_logger</code><span class="sig-paren">(</span><em>name=None</em>, <em>stdError=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/rpyc_worker.html#RpycWorker.enable_logger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.rpyc_worker.RpycWorker.enable_logger" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="rpyc_docker.rpyc_worker.RpycWorker.image">
+<code class="descname">image</code><em class="property"> = 'ubuntu/rpyc_worker:pexpect'</em><a class="headerlink" href="#rpyc_docker.rpyc_worker.RpycWorker.image" title="Permalink to this definition">¶</a></dt>
+<dd><p>there is a conflict with the ports when starting containers
+this needs to be fixed</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.rpyc_worker.RpycWorker.teardown">
+<code class="descname">teardown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/rpyc_worker.html#RpycWorker.teardown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.rpyc_worker.RpycWorker.teardown" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.rpyc_worker.RpycWorker.write_file">
+<code class="descname">write_file</code><span class="sig-paren">(</span><em>filePath</em>, <em>content</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/rpyc_worker.html#RpycWorker.write_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.rpyc_worker.RpycWorker.write_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-rpyc_docker.worker">
+<span id="rpyc-docker-worker-module"></span><h2>rpyc_docker.worker module<a class="headerlink" href="#module-rpyc_docker.worker" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="rpyc_docker.worker.Worker">
+<em class="property">class </em><code class="descclassname">rpyc_docker.worker.</code><code class="descname">Worker</code><a class="reference internal" href="_modules/rpyc_docker/worker.html#Worker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.worker.Worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
+<dl class="method">
+<dt id="rpyc_docker.worker.Worker.cmd">
+<code class="descname">cmd</code><span class="sig-paren">(</span><em>cmd</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/worker.html#Worker.cmd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.worker.Worker.cmd" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="classmethod">
+<dt id="rpyc_docker.worker.Worker.inc_workers">
+<em class="property">classmethod </em><code class="descname">inc_workers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/worker.html#Worker.inc_workers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.worker.Worker.inc_workers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.worker.Worker.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/worker.html#Worker.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.worker.Worker.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.worker.Worker.setup">
+<code class="descname">setup</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/worker.html#Worker.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.worker.Worker.setup" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.worker.Worker.teardown">
+<code class="descname">teardown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/worker.html#Worker.teardown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.worker.Worker.teardown" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="rpyc_docker.worker.Worker.upTime">
+<code class="descname">upTime</code><a class="headerlink" href="#rpyc_docker.worker.Worker.upTime" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.worker.Worker.work">
+<code class="descname">work</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/worker.html#Worker.work"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.worker.Worker.work" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-rpyc_docker">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-rpyc_docker" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        <a class="uplink" href="index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, John Paul Janecek.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

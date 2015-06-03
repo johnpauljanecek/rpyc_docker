@@ -1,0 +1,175 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>rpyc_docker.rpyc_worker &mdash; rpyc_docker 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/haiku.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="rpyc_docker 0.1 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body role="document">
+      <div class="header" role="banner"><h1 class="heading"><a href="../../index.html">
+          <span>rpyc_docker 0.1 documentation</span></a></h1>
+        <h2 class="heading"><span>rpyc_docker.rpyc_worker</span></h2>
+      </div>
+      <div class="topnav" role="navigation" aria-label="top navigation">
+      
+        <p>
+        <a class="uplink" href="../../index.html">Contents</a>
+        </p>
+
+      </div>
+      <div class="content">
+        
+        
+  <h1>Source code for rpyc_docker.rpyc_worker</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">rpyc_docker.worker</span> <span class="kn">import</span> <span class="n">Worker</span>
+<span class="kn">import</span> <span class="nn">logging</span><span class="o">,</span><span class="nn">rpyc</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s">&quot;rpyc_docker&quot;</span><span class="p">)</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RpycWorker"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.rpyc_worker.RpycWorker">[docs]</a><span class="k">class</span> <span class="nc">RpycWorker</span><span class="p">(</span><span class="n">Worker</span><span class="p">):</span>
+    <span class="n">image</span> <span class="o">=</span> <span class="s">&quot;ubuntu/rpyc_worker:pexpect&quot;</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    there is a conflict with the ports when starting containers</span>
+<span class="sd">    this needs to be fixed</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">docker</span><span class="p">,</span><span class="n">mount</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
+        <span class="n">Worker</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">docker</span> <span class="o">=</span> <span class="n">docker</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mount</span> <span class="o">=</span> <span class="n">mount</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rpycPort</span> <span class="o">=</span> <span class="mi">9000</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">workerNum</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vncPort</span> <span class="o">=</span> <span class="mi">5900</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">workerNum</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">browser</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="bp">None</span>
+        
+<div class="viewcode-block" id="RpycWorker.create_container"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.rpyc_worker.RpycWorker.create_container">[docs]</a>    <span class="k">def</span> <span class="nf">create_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vncExternal</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">container</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">create_container</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">image</span><span class="p">,</span>
+            <span class="n">ports</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5900</span><span class="p">,</span><span class="mi">18812</span><span class="p">],</span>
+            <span class="n">working_dir</span> <span class="o">=</span> <span class="s">&quot;/Development&quot;</span><span class="p">,</span>
+            <span class="n">volumes</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;/Development&#39;</span><span class="p">],</span>
+            <span class="n">command</span> <span class="o">=</span> <span class="s">&quot;rpyc_classic.py&quot;</span>
+        <span class="p">)</span>
+
+        <span class="n">port_bindings</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="mi">18812</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;127.0.0.1&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rpycPort</span><span class="p">),</span>
+            <span class="mi">5900</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;127.0.0.1&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">vncPort</span><span class="p">)}</span>
+
+        <span class="k">if</span> <span class="n">vncExternal</span> <span class="p">:</span>
+            <span class="n">port_bindings</span><span class="p">[</span><span class="mi">5900</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">vncExternal</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">vncPort</span><span class="p">)</span>
+
+        <span class="n">binds</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mount</span> <span class="p">:</span>
+            <span class="n">binds</span> <span class="o">=</span> <span class="p">{</span> <span class="bp">self</span><span class="o">.</span><span class="n">mount</span> <span class="p">:</span> 
+                      <span class="p">{</span> <span class="s">&#39;bind&#39;</span><span class="p">:</span> <span class="s">&#39;/Development&#39;</span><span class="p">,</span> <span class="s">&#39;ro&#39;</span><span class="p">:</span> <span class="bp">False</span> <span class="p">}}</span>
+            
+        <span class="bp">self</span><span class="o">.</span><span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">start</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">,</span>
+            <span class="n">port_bindings</span> <span class="o">=</span> <span class="n">port_bindings</span><span class="p">,</span> 
+            <span class="n">privileged</span> <span class="o">=</span> <span class="bp">True</span><span class="p">,</span>
+            <span class="n">binds</span> <span class="o">=</span> <span class="n">binds</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c">#this option does not seem to work</span>
+        <span class="c">#set DNS in docker with </span>
+        <span class="c">#https://robinwinslow.co.uk/2014/08/27/fix-docker-networking/</span>
+        <span class="c">#patching the container directly by modifying resolv.conf file</span>
+
+        <span class="n">resolvPath</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">inspect_container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">)[</span><span class="s">&quot;ResolvConfPath&quot;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cmd</span><span class="p">(</span><span class="s">u&quot;echo &#39;nameserver 8.8.8.8&#39; | sudo tee </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">resolvPath</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="RpycWorker.connect_rpyc"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.rpyc_worker.RpycWorker.connect_rpyc">[docs]</a>    <span class="k">def</span> <span class="nf">connect_rpyc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">rpyc</span><span class="o">.</span><span class="n">classic</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">&quot;127.0.0.1&quot;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">rpycPort</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="s">&quot;/root&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&quot;USER&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;root&quot;</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div>
+<div class="viewcode-block" id="RpycWorker.write_file"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.rpyc_worker.RpycWorker.write_file">[docs]</a>    <span class="k">def</span> <span class="nf">write_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">filePath</span><span class="p">,</span><span class="n">content</span><span class="p">):</span>
+        <span class="n">os</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">os</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">builtins</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">filePath</span><span class="p">,</span><span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div>
+<div class="viewcode-block" id="RpycWorker.docker_ps"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.rpyc_worker.RpycWorker.docker_ps">[docs]</a>    <span class="k">def</span> <span class="nf">docker_ps</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;gets all the processes running in the docker container&quot;&quot;&quot;</span>
+        <span class="n">psId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">exec_create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">,</span><span class="s">&quot;ps&quot;</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">exec_start</span><span class="p">(</span><span class="n">psId</span><span class="p">,</span><span class="n">stream</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+        
+        <span class="n">titles</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">t</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+        <span class="n">processes</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">process</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">title</span><span class="p">,</span><span class="n">value</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">titles</span><span class="p">,</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="p">:</span>
+                <span class="n">process</span><span class="p">[</span><span class="n">title</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="n">processes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">process</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">processes</span>
+</div>
+<div class="viewcode-block" id="RpycWorker.docker_ls"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.rpyc_worker.RpycWorker.docker_ls">[docs]</a>    <span class="k">def</span> <span class="nf">docker_ls</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">path</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="p">):</span>
+        <span class="n">psId</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">exec_create</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">,</span><span class="s">&quot;ls </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">path</span><span class="p">)</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">exec_start</span><span class="p">(</span><span class="n">psId</span><span class="p">,</span><span class="n">stream</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">lines</span>
+</div>
+<div class="viewcode-block" id="RpycWorker.enable_logger"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.rpyc_worker.RpycWorker.enable_logger">[docs]</a>    <span class="k">def</span> <span class="nf">enable_logger</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span><span class="n">stdError</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logStream</span> <span class="o">=</span> <span class="n">cStringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+        
+        <span class="k">if</span> <span class="n">name</span> <span class="p">:</span>
+            <span class="n">remote_logger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">remote_logger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">stdError</span> <span class="p">:</span>
+            <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+            <span class="n">remote_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+            
+        <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">modules</span><span class="o">.</span><span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logStream</span><span class="p">)</span>
+        <span class="n">remote_logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="RpycWorker.teardown"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.rpyc_worker.RpycWorker.teardown">[docs]</a>    <span class="k">def</span> <span class="nf">teardown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">stop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">docker</span><span class="o">.</span><span class="n">remove_container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">container</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">teardown</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+</pre></div>
+
+      </div>
+      <div class="bottomnav" role="navigation" aria-label="bottom navigation">
+      
+        <p>
+        <a class="uplink" href="../../index.html">Contents</a>
+        </p>
+
+      </div>
+
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, John Paul Janecek.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>
