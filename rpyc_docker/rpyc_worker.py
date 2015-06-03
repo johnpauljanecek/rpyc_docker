@@ -1,4 +1,4 @@
-from rpyc_docker import Worker
+from rpyc_docker.worker import Worker
 import logging,rpyc
 
 logger = logging.getLogger("rpyc_docker")

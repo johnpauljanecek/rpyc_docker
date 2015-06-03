@@ -1,4 +1,4 @@
-from rpyc_docker import RpycWorker
+from rpyc_docker.rpyc_worker import RpycWorker
 import rpyc_docker.browser,os.path
 
 import logging,rpyc,rpyc.utils.classic
