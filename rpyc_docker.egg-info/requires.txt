@@ -1,0 +1,12 @@
+rpyc
+docker-py
+pexpect
+beautifulsoup4
+pyvirtualdisplay
+selenium
+
+[test]
+coverage
+
+[dev]
+check-manifest

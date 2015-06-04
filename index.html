@@ -42,7 +42,12 @@
         
   <div class="section" id="welcome-to-rpyc-docker-s-documentation">
 <h1>Welcome to rpyc_docker&#8217;s documentation!<a class="headerlink" href="#welcome-to-rpyc-docker-s-documentation" title="Permalink to this headline">¶</a></h1>
-<p>Contents:</p>
+<p>Rpyc_docker uses the python module <a class="reference external" href="http://rpyc.readthedocs.org">Rpyc</a> to control docker containers, that means you can run multiple instances of <a class="reference external" href="https://www.docker.com/">docker</a> containers and control them externally and transparently using rpyc.</p>
+<p>It can be used for other things, but right now it is primarily designed to run multiple <a class="reference external" href="http://selenium-python.readthedocs.org/">selenium</a> headless browsers on a single server or vps. The advantage of this approach is each browser is self contained in its own docker virtual machine, this makes it easier to customize the browser. Also if one of the browsers crashes, since it is isolated in its own virual machine it will not bring down the entire grid.</p>
+<p>Since rpyc works over network protocols, it would be possible to have one server controlling multiple headless browsers on other machines. This feature has not been added in yet. If I have a need to do this, I might do this in the future.</p>
+</div>
+<div class="section" id="contents">
+<h1>Contents:<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <ul class="simple">
 </ul>

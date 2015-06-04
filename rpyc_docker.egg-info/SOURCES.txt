@@ -1,0 +1,14 @@
+setup.py
+rpyc_docker/__init__.py
+rpyc_docker/browser.py
+rpyc_docker/drivers.py
+rpyc_docker/manager.py
+rpyc_docker/rpyc_browser_worker.py
+rpyc_docker/rpyc_worker.py
+rpyc_docker/worker.py
+rpyc_docker.egg-info/PKG-INFO
+rpyc_docker.egg-info/SOURCES.txt
+rpyc_docker.egg-info/dependency_links.txt
+rpyc_docker.egg-info/pbr.json
+rpyc_docker.egg-info/requires.txt
+rpyc_docker.egg-info/top_level.txt

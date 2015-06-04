@@ -56,24 +56,27 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">threading</span><span class="o">.</span><span class="n">Thread</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="bp">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">traceback</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_traceback</span> <span class="o">=</span> <span class="bp">None</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">argQueue</span> <span class="o">=</span> <span class="n">argQueue</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">numWorkers</span> <span class="o">=</span> <span class="n">numWorkers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">maxTime</span> <span class="o">=</span> <span class="n">maxTime</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">workers</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span> <span class="o">=</span> <span class="p">[]</span>
 
 <div class="viewcode-block" id="Manager.run"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.manager.Manager.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__run</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">traceback</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_traceback</span> <span class="o">=</span> <span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="bp">False</span>
             </div>
 <div class="viewcode-block" id="Manager.stop"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.manager.Manager.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        stops the manager, there might be a delay before it loops throught the workers</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">running</span> <span class="o">=</span> <span class="bp">False</span>
     </div>
     <span class="k">def</span> <span class="nf">__run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -82,15 +85,15 @@
             <span class="n">doneWorkers</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">worker</span><span class="p">,</span><span class="n">workerCls</span><span class="p">,</span><span class="n">args</span><span class="p">,</span><span class="n">kwArgs</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">workers</span> <span class="p">:</span>
                 <span class="k">if</span> <span class="n">worker</span><span class="o">.</span><span class="n">upTime</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxTime</span> <span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s">&quot;timeout&quot;</span><span class="p">,</span><span class="n">workerCls</span><span class="p">,</span><span class="n">args</span><span class="p">,</span><span class="n">kwArgs</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s">&quot;timeout&quot;</span><span class="p">,</span><span class="n">workerCls</span><span class="p">,</span><span class="n">args</span><span class="p">,</span><span class="n">kwArgs</span><span class="p">])</span>
                     <span class="n">doneWorkers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">worker</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">worker</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s">&quot;running&quot;</span> <span class="p">:</span>
                     <span class="n">runningWorkers</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">worker</span><span class="p">,</span><span class="n">workerCls</span><span class="p">,</span><span class="n">args</span><span class="p">,</span><span class="n">kwArgs</span><span class="p">])</span>
                 <span class="k">elif</span> <span class="n">worker</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s">&quot;done&quot;</span> <span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">worker</span><span class="o">.</span><span class="n">result</span><span class="p">,</span><span class="n">workerCls</span><span class="p">,</span><span class="n">args</span><span class="p">,</span><span class="n">kwArgs</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">worker</span><span class="o">.</span><span class="n">result</span><span class="p">,</span><span class="n">workerCls</span><span class="p">,</span><span class="n">args</span><span class="p">,</span><span class="n">kwArgs</span><span class="p">])</span>
                     <span class="n">doneWorkers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">worker</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">worker</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="s">&quot;error&quot;</span> <span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">worker</span><span class="o">.</span><span class="n">traceback</span><span class="p">,</span><span class="n">workerCls</span><span class="p">,</span><span class="n">args</span><span class="p">,</span><span class="n">kwArgs</span><span class="p">])</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">worker</span><span class="o">.</span><span class="n">traceback</span><span class="p">,</span><span class="n">workerCls</span><span class="p">,</span><span class="n">args</span><span class="p">,</span><span class="n">kwArgs</span><span class="p">])</span>
                     <span class="n">doneWorkers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">worker</span><span class="p">)</span>
                 <span class="k">else</span> <span class="p">:</span>
                     <span class="k">pass</span>
@@ -115,19 +118,58 @@
             <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
                 
 <div class="viewcode-block" id="Manager.report"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.manager.Manager.report">[docs]</a>    <span class="k">def</span> <span class="nf">report</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        generates report of the status of the manager</span>
+<span class="sd">        </span>
+<span class="sd">        :return: report</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="p">[</span>
             <span class="s">&quot;WorkerManager Report&quot;</span><span class="p">,</span>
             <span class="s">&quot;Running workers </span><span class="si">%d</span><span class="s"> &quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">workers</span><span class="p">),</span>
-            <span class="s">&quot;Results </span><span class="si">%d</span><span class="s"> &quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">),</span>
-            <span class="s">&quot;Errors </span><span class="si">%d</span><span class="s"> &quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">errors</span><span class="p">),</span>
+            <span class="s">&quot;Results </span><span class="si">%d</span><span class="s"> &quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">),</span>
+            <span class="s">&quot;Errors </span><span class="si">%d</span><span class="s"> &quot;</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="p">),</span>
             <span class="s">&quot;Queue Size </span><span class="si">%d</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">argQueue</span><span class="o">.</span><span class="n">qsize</span><span class="p">()</span>
         <span class="p">]</span>        
 
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">traceback</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_traceback</span><span class="p">:</span>
             <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;TRACEBACK ERROR&quot;</span><span class="p">)</span>
-            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traceback</span><span class="p">)</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_traceback</span><span class="p">)</span>
         
         <span class="k">return</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">managerTraceback</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        shows traceback of manager if it has crashed</span>
+<span class="sd">        </span>
+<span class="sd">        :return: traceback of manager</span>
+<span class="sd">        :rtype: string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Manager.get_error"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.manager.Manager.get_error">[docs]</a>    <span class="k">def</span> <span class="nf">get_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns the traceback of a worker if it has crashed</span>
+
+<span class="sd">        :param n: worker number</span>
+<span class="sd">        :type n: int</span>
+<span class="sd">        :return: traceback</span>
+<span class="sd">        :rtype: str:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_errors</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="Manager.get_result"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.manager.Manager.get_result">[docs]</a>    <span class="k">def</span> <span class="nf">get_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">n</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        returns the result of a worker if it has finished</span>
+
+<span class="sd">        :param n: worker number</span>
+<span class="sd">        :type n: int</span>
+<span class="sd">        :return: result</span>
+<span class="sd">        :rtype: object:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_results</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    
+        
 </pre></div></div></div>
 
       </div>

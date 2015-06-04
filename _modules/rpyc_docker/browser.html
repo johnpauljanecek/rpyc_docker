@@ -66,7 +66,10 @@
         <span class="k">return</span> <span class="s">&quot;firefox&quot;</span>
 </div>
 <div class="viewcode-block" id="Browser.patch_pydisplay"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.browser.Browser.patch_pydisplay">[docs]</a>    <span class="k">def</span> <span class="nf">patch_pydisplay</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;patch xvnc to use password file&quot;&quot;&quot;</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        monkey patch xvnc to use password file</span>
+<span class="sd">        if using xvnc backend call this function before calling setup</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="kn">from</span> <span class="nn">pyvirtualdisplay.xvnc</span> <span class="kn">import</span> <span class="n">XvncDisplay</span>
         <span class="kn">import</span> <span class="nn">pexpect</span>
 
@@ -93,10 +96,18 @@
               <span class="n">backend</span> <span class="o">=</span> <span class="s">&#39;xvfb&#39;</span><span class="p">,</span>
               <span class="n">opt</span> <span class="o">=</span> <span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        driver is either a function which creates a webdriver</span>
-<span class="sd">        or an attribute string</span>
-<span class="sd">        visible is either True or False, if False it uses pydisplay</span>
-<span class="sd">        backend only is used if visible is False, can be either &#39;xvfb&#39; or &#39;xvnc&#39;</span>
+<span class="sd">        Sets up the webbrowser</span>
+
+<span class="sd">        :param visible: if True, visible if False runs as headless</span>
+<span class="sd">        :param driver: either &quot;firefox&quot; or &quot;chrome&quot; or a an instance of rpyc_docker.drivers.WebDriver</span>
+<span class="sd">        :param backend: either &quot;xvfb&quot; or xvnc&quot; if xvnc then it will start and xvnc server which can be connected to. Default password is secret.</span>
+<span class="sd">        :param opt: not used</span>
+<span class="sd">        :type visible: bool</span>
+<span class="sd">        :type driver: str or rpyc_docker.drivers.WebDriver</span>
+<span class="sd">        :type backend: str</span>
+<span class="sd">        :type opt: None</span>
+<span class="sd">        :return: True if successful</span>
+<span class="sd">        :rtype: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">backend</span> <span class="o">==</span> <span class="s">&quot;xvnc&quot;</span> <span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">patch_pydisplay</span><span class="p">()</span>
@@ -109,14 +120,19 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="n">driver</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">True</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s">&quot;driver_</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">driver</span><span class="p">,))()</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s">&quot;driver_</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">driver</span><span class="p">,))()</span>
+                <span class="k">return</span> <span class="bp">True</span>
             <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">teardown</span><span class="p">()</span>
                 <span class="k">return</span> <span class="bp">False</span>
 </div>
 <div class="viewcode-block" id="Browser.teardown"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.browser.Browser.teardown">[docs]</a>    <span class="k">def</span> <span class="nf">teardown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        tears down the webbrowser</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">quit</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">driver</span> <span class="o">=</span> <span class="bp">None</span>
@@ -127,6 +143,12 @@
         <span class="k">return</span> <span class="bp">True</span>
 </div>
 <div class="viewcode-block" id="Browser.js_ex"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.browser.Browser.js_ex">[docs]</a>    <span class="k">def</span> <span class="nf">js_ex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">script</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        convenience function to execute javascript.</span>
+
+<span class="sd">        :param script: The JavaScript to execute.</span>
+<span class="sd">        :param *args: Any applicable arguments for your JavaScript.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">driver</span><span class="o">.</span><span class="n">execute_script</span><span class="p">(</span><span class="n">script</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Browser.js_ex_file"><a class="viewcode-back" href="../../rpyc_docker.html#rpyc_docker.browser.Browser.js_ex_file">[docs]</a>    <span class="k">def</span> <span class="nf">js_ex_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fileName</span><span class="p">):</span>
