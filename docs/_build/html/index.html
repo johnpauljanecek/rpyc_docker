@@ -46,6 +46,33 @@
 <p>It can be used for other things, but right now it is primarily designed to run multiple <a class="reference external" href="http://selenium-python.readthedocs.org/">selenium</a> headless browsers on a single server or vps. The advantage of this approach is each browser is self contained in its own docker virtual machine, this makes it easier to customize the browser. Also if one of the browsers crashes, since it is isolated in its own virual machine it will not bring down the entire grid.</p>
 <p>Since rpyc works over network protocols, it would be possible to have one server controlling multiple headless browsers on other machines. This feature has not been added in yet. If I have a need to do this, I might do this in the future.</p>
 </div>
+<div class="section" id="requirements">
+<h1>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li>An OS which supports Docker</li>
+<li>Docker - <a class="reference external" href="https://docs.docker.com/installation/">instructions</a> on how to install docker</li>
+<li>Python 2.7.X - right now rpyc_docker only runs on python 2.7.X because that is the version of Python I use. At this point in time I have no need to make it run on Python 3.X</li>
+</ul>
+</div>
+<div class="section" id="setup">
+<h1>Setup<a class="headerlink" href="#setup" title="Permalink to this headline">¶</a></h1>
+<ol class="arabic simple">
+<li>Download rpyc_docker from its <a class="reference external" href="https://github.com/johnpauljanecek/rpyc_docker">repository</a> . To download click the buttom marked Download Zip.</li>
+<li>Unpack the archive.</li>
+<li>From the command line switch to the directory docker_files/rpyc_docker</li>
+<li>Built the docker image with the command &#8220;docker build -t=&#8221;rpyc_docker&#8221; .&#8221; If you wish you can create your own custom docker image.</li>
+<li>Install the package with &#8220;pip2 install .&#8221; You could also use &#8220;python setup.py install&#8221; but it is better to use pip.</li>
+</ol>
+</div>
+<div class="section" id="examples">
+<h1>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h1>
+<p>All of the examples are in ipython notebooks, that way you can experiment with the examples and modify them.</p>
+<ol class="arabic simple">
+<li>Using the <a class="reference external" href="http://nbviewer.ipython.org/github/johnpauljanecek/rpyc_docker/blob/master/examples/Example%20Browser%20Alone.ipynb">Browser Object</a> - how to setup and use browser object stand alone.</li>
+<li>Using a single Browser Object running inside a docker container to scrape duckduckgo and python subreddit. <a class="reference external" href="http://nbviewer.ipython.org/github/johnpauljanecek/rpyc_docker/blob/master/examples/Example%20BrowserRpycWorker%20.ipynb">BrowserRpycWorker</a>.</li>
+<li>Using a Manager to run a series of requests to query duckerduckgo and fetch the headlines off a python subreddit simultaniously. Each job will run in its own isolated docker container. <a class="reference external" href="http://nbviewer.ipython.org/github/johnpauljanecek/rpyc_docker/blob/master/examples/Example%20using%20manager%20to%20run%20multiple%20dockers%20at%20once.ipynb">Example using manager to run multiple dockers at once</a></li>
+</ol>
+</div>
 <div class="section" id="contents">
 <h1>Contents:<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
