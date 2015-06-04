@@ -22,7 +22,10 @@ class Browser(object):
         return "firefox"
 
     def patch_pydisplay(self):
-        """patch xvnc to use password file"""
+        """
+        monkey patch xvnc to use password file
+        if using xvnc backend call this function before calling setup
+        """
         from pyvirtualdisplay.xvnc import XvncDisplay
         import pexpect
 
@@ -49,10 +52,18 @@ class Browser(object):
               backend = 'xvfb',
               opt = None):
         """
-        driver is either a function which creates a webdriver
-        or an attribute string
-        visible is either True or False, if False it uses pydisplay
-        backend only is used if visible is False, can be either 'xvfb' or 'xvnc'
+        Sets up the webbrowser
+
+        :param visible: if True, visible if False runs as headless
+        :param driver: either "firefox" or "chrome" or a an instance of rpyc_docker.drivers.WebDriver
+        :param backend: either "xvfb" or xvnc" if xvnc then it will start and xvnc server which can be connected to. Default password is secret.
+        :param opt: not used
+        :type visible: bool
+        :type driver: str or rpyc_docker.drivers.WebDriver
+        :type backend: str
+        :type opt: None
+        :return: True if successful
+        :rtype: bool
         """
         if backend == "xvnc" :
             self.patch_pydisplay()
@@ -65,14 +76,19 @@ class Browser(object):
             self.display.start()
         try:
             self.driver = driver()
+            return True
         except TypeError:
             try:
-                return getattr(self,"driver_%s" % (driver,))()
+                getattr(self,"driver_%s" % (driver,))()
+                return True
             except AttributeError:
                 self.teardown()
                 return False
 
     def teardown(self):
+        """
+        tears down the webbrowser
+        """
         if self.driver :
             self.driver.quit()
             self.driver = None
@@ -83,6 +99,12 @@ class Browser(object):
         return True
 
     def js_ex(self,script,*args):
+        """
+        convenience function to execute javascript.
+
+        :param script: The JavaScript to execute.
+        :param *args: Any applicable arguments for your JavaScript.
+        """
         return self.driver.execute_script(script,*args)
 
     def js_ex_file(self,fileName):

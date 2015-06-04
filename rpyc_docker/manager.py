@@ -12,24 +12,27 @@ class Manager(threading.Thread):
         """
         threading.Thread.__init__(self)
         self.running = True
-        self.traceback = None
+        self._traceback = None
         
         self.argQueue = argQueue
         self.numWorkers = numWorkers
         self.maxTime = maxTime
 
         self.workers = []
-        self.results = []
-        self.errors = []
+        self._results = []
+        self._errors = []
 
     def run(self):
         try:
             self.__run()
         except Exception:
-            self.traceback = traceback.format_exc()
+            self._traceback = traceback.format_exc()
             self.running = False
             
     def stop(self):
+        """
+        stops the manager, there might be a delay before it loops throught the workers
+        """
         self.running = False
     
     def __run(self):
@@ -38,15 +41,15 @@ class Manager(threading.Thread):
             doneWorkers = []
             for worker,workerCls,args,kwArgs in self.workers :
                 if worker.upTime > self.maxTime :
-                    self.errors.append(["timeout",workerCls,args,kwArgs])
+                    self._errors.append(["timeout",workerCls,args,kwArgs])
                     doneWorkers.append(worker)
                 elif worker.status == "running" :
                     runningWorkers.append([worker,workerCls,args,kwArgs])
                 elif worker.status == "done" :
-                    self.results.append([worker.result,workerCls,args,kwArgs])
+                    self._results.append([worker.result,workerCls,args,kwArgs])
                     doneWorkers.append(worker)
                 elif worker.status == "error" :
-                    self.errors.append([worker.traceback,workerCls,args,kwArgs])
+                    self._errors.append([worker.traceback,workerCls,args,kwArgs])
                     doneWorkers.append(worker)
                 else :
                     pass
@@ -71,18 +74,57 @@ class Manager(threading.Thread):
             time.sleep(1)
                 
     def report(self):
+        """
+        generates report of the status of the manager
+        
+        :return: report
+        :rtype: string
+        """
         result = [
             "WorkerManager Report",
             "Running workers %d " % len(self.workers),
-            "Results %d " % len(self.results),
-            "Errors %d " % len(self.errors),
+            "Results %d " % len(self._results),
+            "Errors %d " % len(self._errors),
             "Queue Size %d" % self.argQueue.qsize()
         ]        
 
-        if self.traceback:
+        if self._traceback:
             result.append("TRACEBACK ERROR")
-            result.append(self.traceback)
+            result.append(self._traceback)
         
         return "\n".join(result)
+
+    @property
+    def managerTraceback(self):
+        """
+        shows traceback of manager if it has crashed
+        
+        :return: traceback of manager
+        :rtype: string
+        """
+
+    def get_error(self,n):
+        """
+        returns the traceback of a worker if it has crashed
+
+        :param n: worker number
+        :type n: int
+        :return: traceback
+        :rtype: str:
+        """
+        return self._errors[n][0]
+
+    def get_result(self,n):
+        """
+        returns the result of a worker if it has finished
+
+        :param n: worker number
+        :type n: int
+        :return: result
+        :rtype: object:
+        """
+        return self._results[n][0]
+    
+        
 
 

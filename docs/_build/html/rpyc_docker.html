@@ -78,7 +78,21 @@ displayed. Requires that PIL or Pillows is installed</p>
 <dl class="method">
 <dt id="rpyc_docker.browser.Browser.js_ex">
 <code class="descname">js_ex</code><span class="sig-paren">(</span><em>script</em>, <em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/browser.html#Browser.js_ex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.browser.Browser.js_ex" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>convenience function to execute javascript.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>script</strong> &#8211; The JavaScript to execute.</li>
+<li><strong>*args</strong> &#8211; <p>Any applicable arguments for your JavaScript.</p>
+</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="rpyc_docker.browser.Browser.js_ex_file">
@@ -88,22 +102,41 @@ displayed. Requires that PIL or Pillows is installed</p>
 <dl class="method">
 <dt id="rpyc_docker.browser.Browser.patch_pydisplay">
 <code class="descname">patch_pydisplay</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/browser.html#Browser.patch_pydisplay"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.browser.Browser.patch_pydisplay" title="Permalink to this definition">¶</a></dt>
-<dd><p>patch xvnc to use password file</p>
+<dd><p>monkey patch xvnc to use password file
+if using xvnc backend call this function before calling setup</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="rpyc_docker.browser.Browser.setup">
 <code class="descname">setup</code><span class="sig-paren">(</span><em>visible=False</em>, <em>driver='firefox'</em>, <em>backend='xvfb'</em>, <em>opt=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/browser.html#Browser.setup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.browser.Browser.setup" title="Permalink to this definition">¶</a></dt>
-<dd><p>driver is either a function which creates a webdriver
-or an attribute string
-visible is either True or False, if False it uses pydisplay
-backend only is used if visible is False, can be either &#8216;xvfb&#8217; or &#8216;xvnc&#8217;</p>
+<dd><p>Sets up the webbrowser</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>visible</strong> (<em>bool</em>) &#8211; if True, visible if False runs as headless</li>
+<li><strong>driver</strong> (<em>str or rpyc_docker.drivers.WebDriver</em>) &#8211; either &#8220;firefox&#8221; or &#8220;chrome&#8221; or a an instance of rpyc_docker.drivers.WebDriver</li>
+<li><strong>backend</strong> (<em>str</em>) &#8211; either &#8220;xvfb&#8221; or xvnc&#8221; if xvnc then it will start and xvnc server which can be connected to. Default password is secret.</li>
+<li><strong>opt</strong> (<em>None</em>) &#8211; not used</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if successful</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">bool</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
 <dt id="rpyc_docker.browser.Browser.teardown">
 <code class="descname">teardown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/browser.html#Browser.teardown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.browser.Browser.teardown" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>tears down the webbrowser</p>
+</dd></dl>
 
 </dd></dl>
 

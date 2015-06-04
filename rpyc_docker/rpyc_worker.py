@@ -14,10 +14,20 @@ class RpycWorker(Worker):
         Worker.__init__(self)
         self.docker = docker
         self.mount = mount
-        self.rpycPort = 9000 + self.workerNum - 1
-        self.vncPort = 5900 + self.workerNum - 1
+        self._rpycPort = 9000 + self.workerNum - 1
+        self._vncPort = 5900 + self.workerNum - 1
         self.browser = None
         self.driver = None
+
+    @property
+    def vncPort(self):
+        """
+        :return: port vncserver is listening on
+        :rtype: int
+        """
+        return self._vncPort
+
+    
         
     def create_container(self,vncExternal=False):
         self.container = self.docker.create_container(
