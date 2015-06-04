@@ -199,9 +199,72 @@ if using xvnc backend call this function before calling setup</p>
 <em class="property">class </em><code class="descclassname">rpyc_docker.manager.</code><code class="descname">Manager</code><span class="sig-paren">(</span><em>argQueue</em>, <em>numWorkers</em>, <em>maxTime=300</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/manager.html#Manager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.manager.Manager" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">threading.Thread</span></code></p>
 <dl class="method">
+<dt id="rpyc_docker.manager.Manager.get_error">
+<code class="descname">get_error</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/manager.html#Manager.get_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.manager.Manager.get_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the traceback of a worker if it has crashed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> (<em>int</em>) &#8211; worker number</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">traceback</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str:</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="rpyc_docker.manager.Manager.get_result">
+<code class="descname">get_result</code><span class="sig-paren">(</span><em>n</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/manager.html#Manager.get_result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.manager.Manager.get_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>returns the result of a worker if it has finished</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n</strong> (<em>int</em>) &#8211; worker number</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">result</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">object:</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="rpyc_docker.manager.Manager.managerTraceback">
+<code class="descname">managerTraceback</code><a class="headerlink" href="#rpyc_docker.manager.Manager.managerTraceback" title="Permalink to this definition">¶</a></dt>
+<dd><p>shows traceback of manager if it has crashed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">traceback of manager</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="rpyc_docker.manager.Manager.report">
 <code class="descname">report</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/manager.html#Manager.report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.manager.Manager.report" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>generates report of the status of the manager</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">report</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="rpyc_docker.manager.Manager.run">
@@ -211,7 +274,8 @@ if using xvnc backend call this function before calling setup</p>
 <dl class="method">
 <dt id="rpyc_docker.manager.Manager.stop">
 <code class="descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/manager.html#Manager.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.manager.Manager.stop" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>stops the manager, there might be a delay before it loops throught the workers</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -278,6 +342,21 @@ this needs to be fixed</p>
 <dt id="rpyc_docker.rpyc_worker.RpycWorker.teardown">
 <code class="descname">teardown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/rpyc_docker/rpyc_worker.html#RpycWorker.teardown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#rpyc_docker.rpyc_worker.RpycWorker.teardown" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="attribute">
+<dt id="rpyc_docker.rpyc_worker.RpycWorker.vncPort">
+<code class="descname">vncPort</code><a class="headerlink" href="#rpyc_docker.rpyc_worker.RpycWorker.vncPort" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">port vncserver is listening on</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="rpyc_docker.rpyc_worker.RpycWorker.write_file">
