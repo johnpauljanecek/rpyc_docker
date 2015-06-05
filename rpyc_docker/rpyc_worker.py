@@ -28,7 +28,13 @@ class RpycWorker(Worker):
         """
         return self._vncPort
 
-    
+    @property
+    def rpycPort(self):
+        """
+        :return: port rpyc server is listening on
+        :rtype: int
+        """
+        return self._rpycPort
         
     def create_container(self,vncExternal=False):
         self.container = self.docker.create_container(
@@ -94,6 +100,11 @@ class RpycWorker(Worker):
 
     def docker_ls(self,path = ""):
         psId = self.docker.exec_create(self.container,"ls %s" % path)
+        lines = self.docker.exec_start(psId,stream=False).splitlines()
+        return lines
+
+    def docker_cmd(self,cmd):
+        psId = self.docker.exec_create(self.container,cmd)
         lines = self.docker.exec_start(psId,stream=False).splitlines()
         return lines
 
