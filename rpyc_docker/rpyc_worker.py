@@ -5,7 +5,8 @@ logger = logging.getLogger("rpyc_docker")
 logger.setLevel(logging.INFO)
 
 class RpycWorker(Worker):
-    image = "ubuntu/rpyc_worker:pexpect"
+    image = "rpyc_docker"
+    
     """
     there is a conflict with the ports when starting containers
     this needs to be fixed
