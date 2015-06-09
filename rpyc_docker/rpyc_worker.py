@@ -126,8 +126,11 @@ class RpycWorker(Worker):
         remote_logger.addHandler(handler)
 
     def teardown(self):
-        self.docker.stop(self.container)
-        self.docker.remove_container(self.container)
+        try:
+            self.docker.stop(self.container)
+            self.docker.remove_container(self.container)
+        AttributeError:
+            pass
 
     def __del__(self):
         try:
