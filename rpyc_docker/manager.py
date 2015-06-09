@@ -102,6 +102,7 @@ class Manager(threading.Thread):
         :return: traceback of manager
         :rtype: string
         """
+        return self._traceback
 
     def get_error(self,n):
         """
