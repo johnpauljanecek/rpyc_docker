@@ -1,8 +1,5 @@
-from rpyc_docker.worker import Worker
-import logging,rpyc
-
-logger = logging.getLogger("rpyc_docker")
-logger.setLevel(logging.INFO)
+from rpyc_docker.worker import Worker,decorator_reset_uptime
+import logging,rpyc,cStringIO
 
 class RpycWorker(Worker):
     image = "rpyc_docker"
@@ -17,9 +14,10 @@ class RpycWorker(Worker):
         self.mount = mount
         self._rpycPort = 9000 + self.workerNum - 1
         self._vncPort = 5900 + self.workerNum - 1
-        self.browser = None
-        self.driver = None
-
+        self._conn = None
+        self.enable_logger()
+        self.logger.info("RpycWorker __init__")
+        
     @property
     def vncPort(self):
         """
@@ -36,10 +34,13 @@ class RpycWorker(Worker):
         """
         return self._rpycPort
         
-    def create_container(self,vncExternal=False):
+    def create_container(self,image = None,vncExternal=False):
+        if image :
+            self.image = image
         self.container = self.docker.create_container(
             self.image,
             ports = [5900,18812],
+            environment = {"DISPLAY" : ":0"},
             working_dir = "/Development",
             volumes = ['/Development'],
             command = "rpyc_classic.py"
@@ -72,12 +73,25 @@ class RpycWorker(Worker):
         resolvPath = self.docker.inspect_container(self.container)["ResolvConfPath"]
         self.cmd(u"echo 'nameserver 8.8.8.8' | sudo tee %s" % resolvPath)
 
+    @property
+    @decorator_reset_uptime
+    def conn(self):
+        return self._conn
+        
+    @decorator_reset_uptime
     def connect_rpyc(self):
-        self.conn = rpyc.classic.connect("127.0.0.1",self.rpycPort)
+        self._conn = rpyc.classic.connect("127.0.0.1",self.rpycPort)
         self.conn.modules.sys.path.insert(0,"/root")
         self.conn.modules.os.environ["USER"] = "root"
+        self.enable_remote_logger()
         return True
 
+    def read_file(self,filePath):
+        os = self.conn.modules.os
+        with self.conn.builtins.open(filePath,"r") as f:
+            content = f.read()
+        return content
+    
     def write_file(self,filePath,content):
         os = self.conn.modules.os
         with self.conn.builtins.open(filePath,"w") as f:
@@ -108,28 +122,67 @@ class RpycWorker(Worker):
         lines = self.docker.exec_start(psId,stream=False).splitlines()
         return lines
 
-    def enable_logger(self,name = None,stdError=False):
+    def enable_logger(self):
+        self.logger_name = "worker %d" % self.workerNum
+        self.logger = logging.getLogger(self.logger_name)
+        #self.logger.setLevel(logging.INFO)
         self.logStream = cStringIO.StringIO()
-        
-        if name :
-            remote_logger = self.conn.modules.logging.getLogger(name)
-        else:
-            remote_logger = self.conn.modules.logging.getLogger()
-
-        if stdError :
-            handler = self.conn.modules.logging.StreamHandler(
-                sys.stderr)
-            remote_logger.addHandler(handler)
-            
-        handler = self.conn.modules.logging.StreamHandler(
+        self.streamHandler = logging.StreamHandler(
             self.logStream)
-        remote_logger.addHandler(handler)
+        self.streamHandler.setFormatter(logging.Formatter("%(name)s %(module)s %(lineno)d %(message)s"))
+        self.logger.addHandler(self.streamHandler)
+        self.logger.propogate = False
+        self.streamHandler.setLevel(logging.INFO)
+        self.logger.setLevel(logging.INFO)
+
+    def enable_remote_logger(self,name = None):
+        if name :
+            self.remote_logger = self.conn.modules.logging.getLogger(name)
+        else :
+            self.remote_logger = self.conn.modules.logging.getLogger()
+        self.remote_logger.addHandler(self.streamHandler)
+        self.remote_logger.setLevel(logging.INFO)
+        self.remote_logger.propogate = False
+
+    def get_log(self):
+        self.logStream.seek(0)
+        return self.logStream.readlines()
+        
+    @decorator_reset_uptime
+    def start_openbox(self,password = "secret",size = (1024,600),color_depth = 24):
+        self.create_vnc_passwd(password)
+        xstartupLines = ['#!/bin/sh',
+                 '',
+                 '# Uncomment the following two lines for normal desktop:',
+                 '# unset SESSION_MANAGER',
+                 '# exec /etc/X11/xinit/xinitrc',
+                 '',
+                 '[ -x /etc/vnc/xstartup ] && exec /etc/vnc/xstartup',
+                 '[ -r $HOME/.Xresources ] && xrdb $HOME/.Xresources',
+                 'xsetroot -solid grey',
+                 'vncconfig -iconic &',
+                 #'x-terminal-emulator -geometry 80x24+10+10 -ls -title "$VNCDESKTOP Desktop" &',
+                 'openbox-session &']
+        
+        #self.write_file("/root/.vnc/xstartup","\n".join(xstartupLines))
+        
+        self.vncserver_exec_id = self.docker.exec_create(
+                self.container,
+                "vncserver -geometry %dx%d -depth %d :0" % (size[0],size[1],color_depth), 
+                stdout=False, 
+                stderr=False,
+                tty=False,
+            )
+
+        self.docker.exec_start(self.vncserver_exec_id,
+                                   detach=True,
+                                   stream=False)
 
     def teardown(self):
         try:
-            self.docker.stop(self.container)
+            self.docker.kill(self.container)
             self.docker.remove_container(self.container)
-        AttributeError:
+        except:
             pass
 
     def __del__(self):
@@ -137,3 +190,14 @@ class RpycWorker(Worker):
             self.teardown()
         except:
             pass
+
+    @decorator_reset_uptime
+    def create_vnc_passwd(self,passWord):
+        pexpect = self.conn.modules["pexpect"]
+        child = pexpect.spawn('vncpasswd')
+        child.expect('Password:')
+        child.sendline('secret')
+        child.expect('Verify:')
+        child.sendline('secret')
+        return True
+    

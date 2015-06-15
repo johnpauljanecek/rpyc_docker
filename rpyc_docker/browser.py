@@ -18,6 +18,7 @@ class Browser(object):
         return "chrome"
 
     def driver_firefox(self):
+        logger.info("def driver_firefox(self):")
         self.driver = webdriver.Firefox()
         return "firefox"
 
@@ -50,7 +51,7 @@ class Browser(object):
     def setup(self,visible = False,
               driver = "firefox",
               backend = 'xvfb',
-              opt = None):
+              opt = None,displayArgs={}):
         """
         Sets up the webbrowser
 
@@ -58,10 +59,12 @@ class Browser(object):
         :param driver: either "firefox" or "chrome" or a an instance of rpyc_docker.drivers.WebDriver
         :param backend: either "xvfb" or xvnc" if xvnc then it will start and xvnc server which can be connected to. Default password is secret.
         :param opt: not used
+        :param displayArgs: extra configurations passed to from pyvirtualdisplay import Display 
         :type visible: bool
         :type driver: str or rpyc_docker.drivers.WebDriver
         :type backend: str
         :type opt: None
+        :type displayArgs: {}
         :return: True if successful
         :rtype: bool
         """
@@ -70,9 +73,9 @@ class Browser(object):
 
         if not visible :
             if backend == 'xvfb':
-                self.display = Display(backend=backend)
+                self.display = Display(backend=backend,**displayArgs)
             else :
-                self.display = Display(backend=backend,rfbport = 5900)
+                self.display = Display(backend=backend,rfbport = 5900,**displayArgs)
             self.display.start()
         try:
             self.driver = driver()

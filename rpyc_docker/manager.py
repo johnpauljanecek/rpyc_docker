@@ -1,9 +1,86 @@
 import Queue,threading,time,os,traceback,subprocess,rpyc,logging
-from docker.utils import create_host_config
+try:
+    from docker.utils import create_host_config
+except ImportError:
+    pass
 from subprocess import check_output,CalledProcessError
 
 logger = logging.getLogger("rpyc_docker")
 logger.setLevel(logging.INFO)
+
+class WorkerResult(object):
+    def __init__(self):
+        self._cls = None
+        self._args = None
+        self._kwargs = None
+        self._traceback = None
+        self._logfile = None
+        self._status = None
+        self._result = None
+
+    @property
+    def cls(self):
+        return self._cls
+
+    @cls.setter
+    def cls(self, value):
+        self._cls = value
+
+    @property
+    def args(self):
+        return self._args
+
+    @args.setter
+    def args(self, value):
+        self._args = value
+
+    @property
+    def kwargs(self):
+        return self._kwargs
+
+    @kwargs.setter
+    def kwargs(self, value):
+        self._kwargs = value
+
+    @property
+    def traceback(self):
+        return self._traceback
+
+    @traceback.setter
+    def traceback(self,value):
+        self._traceback = value
+
+    @property
+    def logfile(self):    
+        return self._logfile
+
+    @logfile.setter
+    def logfile(self,value):    
+        self._logfile = value
+
+    @property
+    def status(self):
+        return self._status
+
+    @status.setter
+    def status(self,value):
+        self._status = value
+
+    @property
+    def result(self):
+        return self._result
+
+    @result.setter
+    def result(self,value):
+        self._result = value
+
+
+class WorkQueue(Queue.Queue):
+    def __init__(self):
+        Queue.Queue.__init__(self)
+    
+    def put_work(self,cls,args,kwArgs):
+        self.put([cls,args,kwArgs])
 
 class Manager(threading.Thread):
     def __init__(self,argQueue,numWorkers,maxTime = 300):
@@ -46,10 +123,12 @@ class Manager(threading.Thread):
                 elif worker.status == "running" :
                     runningWorkers.append([worker,workerCls,args,kwArgs])
                 elif worker.status == "done" :
-                    self._results.append([worker.result,workerCls,args,kwArgs])
+                    self._results.append([worker,workerCls,args,kwArgs])
+                    #self._results.append([worker.result,workerCls,args,kwArgs])
                     doneWorkers.append(worker)
                 elif worker.status == "error" :
-                    self._errors.append([worker.traceback,workerCls,args,kwArgs])
+                    self._errors.append([worker,workerCls,args,kwArgs])
+                    #self._errors.append([worker.traceback,workerCls,args,kwArgs])
                     doneWorkers.append(worker)
                 else :
                     pass
@@ -58,7 +137,7 @@ class Manager(threading.Thread):
                 worker.teardown()
             self.workers = runningWorkers
             
-            for n in range(self.numWorkers - len(self.workers)) :
+            for i in range(self.numWorkers - len(self.workers)):
                 try:
                     workerCls,args,kwArgs = self.argQueue.get_nowait()
                     logger.info("%s,%s,%s" % (workerCls,args,kwArgs))
@@ -67,11 +146,11 @@ class Manager(threading.Thread):
                     worker.start()
                 except Queue.Empty:
                     break
-            
+                    
             if len(self.workers) == 0 :
                 self.running = False
             
-            time.sleep(1)
+            time.sleep(0.05)
                 
     def report(self):
         """
@@ -113,7 +192,8 @@ class Manager(threading.Thread):
         :return: traceback
         :rtype: str:
         """
-        return self._errors[n][0]
+        worker = self._errors[n][0]
+        return worker.traceback
 
     def get_result(self,n):
         """
@@ -124,8 +204,13 @@ class Manager(threading.Thread):
         :return: result
         :rtype: object:
         """
+        worker = self._results[n][0]
+        return worker.result
+
+    def get_worker_result(self,n):
         return self._results[n][0]
-    
-        
+
+    def get_worker_error(self,n):
+        return self._errors[n][0]
 
 

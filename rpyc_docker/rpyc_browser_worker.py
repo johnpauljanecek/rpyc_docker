@@ -1,22 +1,34 @@
 from rpyc_docker.rpyc_worker import RpycWorker
+from rpyc_docker.worker import decorator_reset_uptime
 import rpyc_docker.browser,os.path
-
 import logging,rpyc,rpyc.utils.classic
-logger = logging.getLogger("rpyc_docker")
-logger.setLevel(logging.INFO)
 
 class BrowserRpycWorker(RpycWorker):
     def __init__(self,docker,mount = None):
         RpycWorker.__init__(self,docker,mount)
+        self._browser = None
+        self._driver = None
 
-    def setup_browser(self,driver,visible = False,backend = 'xvfb'):
+    @property
+    @decorator_reset_uptime
+    def driver(self):
+        return self._driver
+
+    @property
+    @decorator_reset_uptime
+    def browser(self):
+        return self._browser
         
-        rpyc.utils.classic.upload_file(self.conn,os.path.abspath(rpyc_docker.browser.__file__),"/root/browser.pyc")
-        self.browser = self.conn.modules["browser"].Browser()
+    @decorator_reset_uptime
+    def setup_browser(self,driver,visible = False,backend = 'xvfb',displayArgs={}):
+        
+        # rpyc.utils.classic.upload_file(self.conn,os.path.abspath(rpyc_docker.browser.__file__),"/root/browser.pyc")
+        # self._browser = self.conn.modules["browser"].Browser()
         self.browser.setup(driver = driver,
                            visible = visible,
-                           backend = backend)
-        self.driver = self.browser.driver
+                           backend = backend,
+                           displayArgs = displayArgs)
+        self._driver = self.browser.driver
         return True
 
     def dump_page(self,destDir):        

@@ -1,7 +1,16 @@
 import threading,time,os,traceback,logging
 from subprocess import check_output,CalledProcessError
-logger = logging.getLogger("rpyc_docker")
-logger.setLevel(logging.INFO)
+from functools import wraps
+#logger = logging.getLogger("rpyc_docker")
+#logger.setLevel(logging.INFO)
+
+def decorator_reset_uptime(f):
+    @wraps(f)
+    def wrapper(*args,**kwargs):
+        self = args[0]
+        self.reset_uptime()
+        return f(*args,**kwargs)
+    return wrapper
 
 class Worker(threading.Thread):
     _numWorkers = 0
@@ -22,8 +31,14 @@ class Worker(threading.Thread):
         except CalledProcessError as e:
             return (e.returncode,e.cmd,e.output)
 
+    def reset_uptime(self):
+        self._startTime = time.time()
+
     @property
     def upTime(self):
+        """
+        used by manager to see if the worker has timed out
+        """
         return time.time() - self._startTime
 
     def setup(self):
