@@ -21,10 +21,9 @@ class BrowserRpycWorker(RpycWorker):
         
     @decorator_reset_uptime
     def setup_browser(self,driver,visible = False,backend = 'xvfb',displayArgs={}):
-        
-        # rpyc.utils.classic.upload_file(self.conn,os.path.abspath(rpyc_docker.browser.__file__),"/root/browser.pyc")
-        # self._browser = self.conn.modules["browser"].Browser()
-        self.browser.setup(driver = driver,
+        self.conn.modules.sys.path.insert(0,"/Development/python/rpyc_docker")
+        self._browser = self.conn.modules["browser"].Browser()
+        self._browser.setup(driver = driver,
                            visible = visible,
                            backend = backend,
                            displayArgs = displayArgs)

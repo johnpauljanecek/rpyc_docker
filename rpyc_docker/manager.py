@@ -212,5 +212,3 @@ class Manager(threading.Thread):
 
     def get_worker_error(self,n):
         return self._errors[n][0]
-
-
