@@ -3,11 +3,18 @@ from rpyc_docker.drivers import WebDriver
 from selenium import webdriver
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 
+class FireFox(WebDriver):
+    def __init__(self,chromeDriverPath = None,**kwargs):
+        WebDriver.__init__(self,**kwargs)
+
+    def setup(self):
+        self.driver = seleniumrequests.Firefox()
+        return self.driver
+
 class FireFoxRequests(WebDriver):
     fireFoxPath = "/home/john/Development/firefox_exe/firefox_35.0/firefox-bin"
     extensionDir = "/home/john/Development/amazon/firefox_extensions"
     extensions = [("firebug","firebug@software.joehewitt.com.xpi"),]
-    
     def __init__(self):
         WebDriver.__init__(self,browserBinary = self.fireFoxPath)
         
