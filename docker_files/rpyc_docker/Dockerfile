@@ -9,5 +9,5 @@ RUN apt-get install -y python2.7 python-pip openvpn xvfb vnc4server firefox xcli
 RUN apt-get autoclean -y
 
 #install python stuff
-RUN /usr/bin/pip2 install rpyc selenium pyvirtualdisplay beautifulsoup4 pexpect pyperclip Pillow
+RUN /usr/bin/pip2 install rpyc selenium pyvirtualdisplay beautifulsoup4 pexpect pyperclip install selenium-requests
 
