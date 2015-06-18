@@ -94,10 +94,11 @@ class Manager(threading.Thread):
         self.argQueue = argQueue
         self.numWorkers = numWorkers
         self.maxTime = maxTime
-
+    
         self.workers = []
         self._results = []
         self._errors = []
+        self.deadWorkersQueue = Queue.Queue()
 
     def run(self):
         try:
@@ -133,8 +134,6 @@ class Manager(threading.Thread):
                 else :
                     pass
             
-            for worker in doneWorkers :
-                worker.teardown()
             self.workers = runningWorkers
             
             for i in range(self.numWorkers - len(self.workers)):
@@ -146,10 +145,21 @@ class Manager(threading.Thread):
                     worker.start()
                 except Queue.Empty:
                     break
+            
+            #start new workers before we destroy old ones
+            for worker in doneWorkers :
+                #self.deadWorkersQueue.put(worker)
+                worker.teardown()
                     
             if len(self.workers) == 0 :
                 self.running = False
             
+            # try:
+            #     deadWorker = self.deadWorkersQueue.get_nowait()
+            #     deadWorker.teardown()
+            # except Queue.Empty:
+            #     pass
+
             time.sleep(0.05)
                 
     def report(self):
