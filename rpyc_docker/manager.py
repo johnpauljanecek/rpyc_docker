@@ -171,13 +171,14 @@ class Manager(threading.Thread):
             if len(self.workers) == 0 :
                 self.running = False
             
+            #put in to slow down the creation of workers
             try:
                  deadWorker = self.deadWorkersQueue.get_nowait()
                  deadWorker.teardown()
              except Queue.Empty:
                  pass
 
-            time.sleep(0.05)
+            time.sleep(1)
                 
     def report(self):
         """
