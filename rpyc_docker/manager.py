@@ -171,11 +171,11 @@ class Manager(threading.Thread):
             if len(self.workers) == 0 :
                 self.running = False
             
-            # try:
-            #     deadWorker = self.deadWorkersQueue.get_nowait()
-            #     deadWorker.teardown()
-            # except Queue.Empty:
-            #     pass
+            try:
+                 deadWorker = self.deadWorkersQueue.get_nowait()
+                 deadWorker.teardown()
+             except Queue.Empty:
+                 pass
 
             time.sleep(0.05)
                 
