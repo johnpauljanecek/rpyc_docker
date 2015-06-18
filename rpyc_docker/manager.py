@@ -82,6 +82,20 @@ class WorkQueue(Queue.Queue):
     def put_work(self,cls,args,kwArgs):
         self.put([cls,args,kwArgs])
 
+class DeadWorkerThread(threading.Thread):
+    def __init__(self,deadWorkersQueue):
+        threading.Thread.__init__(self)
+        self.deadWorkersQueue = deadWorkersQueue
+        self.running = True
+
+    def run(self):
+        while self.running :
+            try:
+                worker = self.deadWorkersQueue.get(True,timeout = 1.0)
+                worker.teardown()
+            except Queue.Empty:
+                pass
+
 class Manager(threading.Thread):
     def __init__(self,argQueue,numWorkers,maxTime = 300):
         """
@@ -99,6 +113,8 @@ class Manager(threading.Thread):
         self._results = []
         self._errors = []
         self.deadWorkersQueue = Queue.Queue()
+        self._deadWorkerThread = DeadWorkerThread(self.deadWorkersQueue)
+        self._deadWorkerThread.start()
 
     def run(self):
         try:
@@ -112,6 +128,7 @@ class Manager(threading.Thread):
         stops the manager, there might be a delay before it loops throught the workers
         """
         self.running = False
+        self._deadWorkerThread.running = False
     
     def __run(self):
         while self.running:
@@ -148,8 +165,8 @@ class Manager(threading.Thread):
             
             #start new workers before we destroy old ones
             for worker in doneWorkers :
-                #self.deadWorkersQueue.put(worker)
-                worker.teardown()
+                self.deadWorkersQueue.put(worker)
+                #worker.teardown()
                     
             if len(self.workers) == 0 :
                 self.running = False
