@@ -175,10 +175,10 @@ class Manager(threading.Thread):
             
             #put in to slow down the creation of workers
             try:
-                 deadWorker = self.deadWorkersQueue.get_nowait()
-                 deadWorker.teardown()
-             except Queue.Empty:
-                 pass
+                deadWorker = self.deadWorkersQueue.get_nowait()
+                deadWorker.teardown()
+            except Queue.Empty:
+                pass
 
             time.sleep(self._loopDelay)
                 
