@@ -108,6 +108,7 @@ class Manager(threading.Thread):
         self.argQueue = argQueue
         self.numWorkers = numWorkers
         self.maxTime = maxTime
+        self._loopDelay = 5 #how often to poll the loop
     
         self.workers = []
         self._results = []
@@ -116,6 +117,7 @@ class Manager(threading.Thread):
         self._deadWorkerThread = DeadWorkerThread(self.deadWorkersQueue)
         self._deadWorkerThread.start()
 
+    
     def run(self):
         try:
             self.__run()
@@ -178,7 +180,7 @@ class Manager(threading.Thread):
              except Queue.Empty:
                  pass
 
-            time.sleep(1)
+            time.sleep(self._loopDelay)
                 
     def report(self):
         """
