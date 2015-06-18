@@ -180,7 +180,9 @@ class RpycWorker(Worker):
 
     def teardown(self):
         try:
-            self.docker.kill(self.container)
+            #kill does not close the file handles ?
+            self.docker.stop(self.container)
+            #self.docker.kill(self.container)
             self.docker.remove_container(self.container)
         except:
             pass

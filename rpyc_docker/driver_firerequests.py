@@ -3,8 +3,16 @@ from rpyc_docker.drivers import WebDriver
 from selenium import webdriver
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 
+class Chrome(WebDriver):
+    def __init__(self):
+        WebDriver.__init__(self,**kwargs)
+
+    def setup(self):
+        self.driver = seleniumrequests.Firefox()
+        return self.driver
+    
 class FireFox(WebDriver):
-    def __init__(self,chromeDriverPath = None,**kwargs):
+    def __init__(self):
         WebDriver.__init__(self,**kwargs)
 
     def setup(self):
