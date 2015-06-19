@@ -130,7 +130,7 @@ class Manager(threading.Thread):
         stops the manager, there might be a delay before it loops throught the workers
         """
         self.running = False
-        self._deadWorkerThread.running = False
+        #self._deadWorkerThread.running = False
     
     def __run(self):
         while self.running:
