@@ -138,7 +138,8 @@ class Manager(threading.Thread):
             doneWorkers = []
             for worker,workerCls,args,kwArgs in self.workers :
                 if worker.upTime > self.maxTime :
-                    self._errors.append(["timeout",workerCls,args,kwArgs])
+                    self._errors.append([worker,workerCls,args,kwArgs])
+                    worker.traceback = "timeout"
                     doneWorkers.append(worker)
                 elif worker.status == "running" :
                     runningWorkers.append([worker,workerCls,args,kwArgs])
