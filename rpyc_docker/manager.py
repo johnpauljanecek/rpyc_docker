@@ -108,7 +108,7 @@ class Manager(threading.Thread):
         self.argQueue = argQueue
         self.numWorkers = numWorkers
         self.maxTime = maxTime
-        self._loopDelay = 5 #how often to poll the loop
+        self._loopDelay = 0.5 #how often to poll the loop
     
         self.workers = []
         self._results = []
