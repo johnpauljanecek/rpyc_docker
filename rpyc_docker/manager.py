@@ -113,9 +113,9 @@ class Manager(threading.Thread):
         self.workers = []
         self._results = []
         self._errors = []
-        self.deadWorkersQueue = Queue.Queue()
-        self._deadWorkerThread = DeadWorkerThread(self.deadWorkersQueue)
-        self._deadWorkerThread.start()
+        # self.deadWorkersQueue = Queue.Queue()
+        # self._deadWorkerThread = DeadWorkerThread(self.deadWorkersQueue)
+        # self._deadWorkerThread.start()
 
     
     def run(self):
@@ -167,18 +167,18 @@ class Manager(threading.Thread):
             
             #start new workers before we destroy old ones
             for worker in doneWorkers :
-                self.deadWorkersQueue.put(worker)
-                #worker.teardown()
+                #self.deadWorkersQueue.put(worker)
+                worker.teardown()
                     
             if len(self.workers) == 0 :
                 self.running = False
             
             #put in to slow down the creation of workers
-            try:
-                deadWorker = self.deadWorkersQueue.get_nowait()
-                deadWorker.teardown()
-            except Queue.Empty:
-                pass
+            # try:
+            #     deadWorker = self.deadWorkersQueue.get_nowait()
+            #     deadWorker.teardown()
+            # except Queue.Empty:
+            #     pass
 
             time.sleep(self._loopDelay)
                 
