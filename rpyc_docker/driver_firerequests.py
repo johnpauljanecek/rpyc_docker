@@ -13,7 +13,7 @@ class Chrome(WebDriver):
     
 class FireFox(WebDriver):
     def __init__(self):
-        WebDriver.__init__(self,**kwargs)
+        WebDriver.__init__(self)
 
     def setup(self):
         self.driver = seleniumrequests.Firefox()
