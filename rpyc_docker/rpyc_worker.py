@@ -79,8 +79,13 @@ class RpycWorker(Worker):
         return self._conn
         
     @decorator_reset_uptime
-    def connect_rpyc(self):
-        self._conn = rpyc.classic.connect("127.0.0.1",self.rpycPort)
+    def connect_rpyc(self,connectDockerIp = True):
+        if connectDockerIp:
+            #this is done this way so docker containers can be contained within a docker host.
+            containerIp = self.docker.inspect_container(self.container)["NetworkSettings"]["IPAddress"]
+            self._conn = rpyc.classic.connect(containerIp)
+        else:
+            self._conn = rpyc.classic.connect("127.0.0.1",self.rpycPort)
         self.conn.modules.sys.path.insert(0,"/root")
         self.conn.modules.os.environ["USER"] = "root"
         self.enable_remote_logger()

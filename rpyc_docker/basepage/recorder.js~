@@ -1,0 +1,75 @@
+window._$recorder = { };
+
+//capture clicks to get element selected attributes
+window._$recorder.dump_attributes = function(elm) {
+  var result = [];
+  for(var i = 0;i < elm.attributes.length;i++) {
+    attribute = elm.attributes[i];
+    result.push([attribute.name,attribute.value]);
+  }
+  return result;
+};
+
+window._$recorder.click_events = [];
+
+window._$recorder.highlight_element = function(elm) {
+    
+};
+
+window._$recorder.dump_element = function(event) {
+    var result = [];
+    var currentElement = event.target;
+    console.log(currentElement);
+    do {
+        result.push([
+            ["tag", currentElement.tagName.toLowerCase()],
+            ["attributes",window._$recorder.dump_attributes(currentElement)]
+        ]);
+        currentElement = currentElement.parentElement;
+    } while(currentElement.tagName.toLowerCase() != "body");
+    window._$recorder.click_events.push(result);
+    return result;
+};
+
+window._$recorder.keydownListner = function(event) {
+    //console.log("keydownListner",event.target)
+    if(event.key == "OS") {
+        window.addEventListener("click",window._$recorder.dump_element,false);
+    }};
+
+window._$recorder.keyupListner = function(event) {
+    //console.log("keyupListner",event.target)
+    if(event.key == "OS") {
+        window.removeEventListener("click",window._$recorder.dump_element,false);
+    }};
+
+window._$recorder.start = function() {
+    window.addEventListener("keydown",
+                            window._$recorder.keydownListner,
+                            false);
+    window.addEventListener(
+        "keyup",
+        window._$recorder.keyupListner,
+        false);    
+};
+
+window._$recorder.stop = function() {
+    window.removeEventListener("keydown",
+                            window._$recorder.keydownListner,
+                            false);
+    window.removeEventListener(
+        "keyup",
+        window._$recorder.keyupListner,
+        false);    
+};
+
+//http://stackoverflow.com/questions/15505225/inject-css-stylesheet-as-string-using-javascript
+//http://davidwalsh.name/add-rules-stylesheets
+window._$recorder.add_style_sheet = function() {
+    var node = document.createElement('style');
+    document.body.appendChild(node);
+    window._$recorder.edit_style_string = function(str) {
+        node.innerHTML = str;
+    }
+};
+

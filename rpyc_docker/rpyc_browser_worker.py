@@ -29,6 +29,35 @@ class BrowserRpycWorker(RpycWorker):
         self._driver = self.browser.driver
         return True
 
+    def start_openbox(self,password = "secret",size = (1024,600),color_depth = 24):
+        self.create_vnc_passwd(password)
+        xstartupLines = ['#!/bin/sh',
+                 '',
+                 '# Uncomment the following two lines for normal desktop:',
+                 '# unset SESSION_MANAGER',
+                 '# exec /etc/X11/xinit/xinitrc',
+                 '',
+                 '[ -x /etc/vnc/xstartup ] && exec /etc/vnc/xstartup',
+                 '[ -r $HOME/.Xresources ] && xrdb $HOME/.Xresources',
+                 'xsetroot -solid grey',
+                 'vncconfig -iconic &',
+                 #'x-terminal-emulator -geometry 80x24+10+10 -ls -title "$VNCDESKTOP Desktop" &',
+                 'openbox-session &']
+        
+        #self.write_file("/root/.vnc/xstartup","\n".join(xstartupLines))
+        
+        self.vncserver_exec_id = self.docker.exec_create(
+                self.container,
+                "vncserver -geometry %dx%d -depth %d :0" % (size[0],size[1],color_depth), 
+                stdout=False, 
+                stderr=False,
+                tty=False,
+            )
+
+        self.docker.exec_start(self.vncserver_exec_id,
+                                   detach=True,
+                                   stream=False)
+    
     def dump_page(self,destDir):        
         import os.path
         import datetime
