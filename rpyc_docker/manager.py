@@ -180,8 +180,14 @@ class Manager(threading.Thread):
             #     deadWorker.teardown()
             # except Queue.Empty:
             #     pass
-
+            self.main_thread_callback()
             time.sleep(self._loopDelay)
+
+    def main_thread_callback(self):
+        """
+        This is called every time the check thread does a loop
+        """
+        pass
                 
     def report(self):
         """
